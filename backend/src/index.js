@@ -7,7 +7,7 @@ dotenv.config({
     path: "./.env"
 });
 
-const starteServer = async () => {
+const startServer = async () => {
     try {
         await connectDB();
         app.on("error", (err) => {
@@ -22,4 +22,4 @@ const starteServer = async () => {
     }
 }
 
-starteServer();
+startServer();
