@@ -21,7 +21,7 @@ const registerUser = async (req, res) => {
             username,
             email,
             password,
-            loggedIn: false
+            loggedIn: false,
         })
 
         return res.status(201).json({
@@ -33,10 +33,69 @@ const registerUser = async (req, res) => {
                 }
             });
     } catch (err){
-        res.status(500).json({message: "Internal server error", error: err.messageD})
+        res.status(500).json({message: "Internal server error", error: err.message})
     }
 };
 
+const loginUser = async (req, res) => {
+    try {
+
+        const {email, password} = req.body;
+
+        const user = await User.findOne({
+            email: email.toLowerCase(),
+        })
+
+        if(!user){
+            return res.status(400).json({message: "Invalid email or password"});
+        }
+
+        const isMatch = await user.comparePassword(password);
+        if(!isMatch) return res.status(400).json({message: "Invalid credentials"});
+
+        res.status(200).json({
+            message: "Login successful",
+            user: {
+                id: user._id,
+                email: user.email,
+                username: user.username,
+            }
+        })
+         } catch (err) {
+            res.status(500).json({
+                message: "Internal server error",
+                error: err.message,
+            })
+
+    }
+};
+
+const logoutUser = async (req,res) => {
+    try{
+        const {email} = req.body;
+
+        const user = User.findOne({email});
+
+        if(!user) return res.status(404).json({
+            message: "User not found",
+        });
+
+        res.status(200).json({
+            message: "Logout successful",
+        });
+
+    } catch (err){
+        res.status(500).json({
+            message: "Internal server error",
+            error: err.message
+        })
+    }
+}
+
 export {
     registerUser,
+    loginUser,
+    logoutUser
 }
+
+// add auth api's create, login, logout
