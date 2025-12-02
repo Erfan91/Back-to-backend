@@ -13,7 +13,7 @@ const registerUser = async (req, res) => {
         //check if user already exists
         const existing = await User.findOne({email: email.toLowerCase()});
         if(existing){
-            return res.status(400).json({messae: "user already exits"});
+            return res.status(400).json({message: "user already exits"});
         }
 
         // create user
@@ -47,7 +47,7 @@ const loginUser = async (req, res) => {
         })
 
         if(!user){
-            return res.status(400).json({message: "Invalid email or password"});
+            return res.status(400).json({message: "Email not registered"});
         }
 
         const isMatch = await user.comparePassword(password);
@@ -77,7 +77,7 @@ const logoutUser = async (req,res) => {
         const user = User.findOne({email});
 
         if(!user) return res.status(404).json({
-            message: "User not found",
+            message: "user not found",
         });
 
         res.status(200).json({
